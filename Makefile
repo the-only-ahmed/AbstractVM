@@ -11,7 +11,7 @@
 #******************************************************************************#
 
 NAME = AbstractVM
-CLASS = Parse.cpp
+CLASS = Parse.cpp Factory.cpp
 SRC = main.cpp
 SRC += $(CLASS)
 CC = clang++

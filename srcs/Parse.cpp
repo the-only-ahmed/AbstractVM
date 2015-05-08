@@ -6,7 +6,7 @@
 /*   By: ael-kadh <ael-kadh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/04 16:19:06 by ael-kadh          #+#    #+#             */
-/*   Updated: 2015/05/04 16:19:07 by ael-kadh         ###   ########.fr       */
+/*   Updated: 2015/05/07 18:03:24 by ael-kadh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ Parse::Parse() {}
 
 std::string* Parse::_instructions = Parse::_setInstructions();
 
-t_stack     Parse::getStack(std::string path) {
+t_instruct     Parse::getInstructions(std::string path) {
 
-   t_stack stack;
+   t_instruct stack;
 
    std::ifstream ifin (path.c_str(), std::ifstream::in);
    if (!ifin.good())

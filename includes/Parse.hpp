@@ -6,7 +6,7 @@
 /*   By: ael-kadh <ael-kadh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/04 16:18:51 by ael-kadh          #+#    #+#             */
-/*   Updated: 2015/05/04 16:26:24 by ael-kadh         ###   ########.fr       */
+/*   Updated: 2015/05/07 18:11:05 by ael-kadh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ public:
    Parse();
    ~Parse();
 
-   static t_stack getStack(std::string path);
+   static t_instruct getInstructions(std::string path);
 
    class ParseException : public std::runtime_error
    {
