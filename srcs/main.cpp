@@ -14,16 +14,13 @@
 #include "IOperand.hpp"
 #include "Factory.hpp"
 
-/*void  emulate(t_instruct instruct) {
+void  emulate(t_instruct instruct) {
 
-   VmStack<IOperand*> vm;
-
+   Factory fac;
    for(auto& ins : instruct)
-   {
-      if (ins.first == "push")
-         vm.push_back();
-   }
-}*/
+      fac.Execute(ins);
+   fac.Show();
+}
 
 int   main(int ac, char **av) {
 
@@ -36,7 +33,7 @@ int   main(int ac, char **av) {
    {
       try {
          t_instruct instruct = Parse::getInstructions(std::string(av[i]));
-         // emulate(instruct);
+         emulate(instruct);
       } catch (std::runtime_error &e) {
          std::cout << av[i] << " : " << e.what() << std::endl;
       }

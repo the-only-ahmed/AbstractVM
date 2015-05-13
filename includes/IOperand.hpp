@@ -22,7 +22,8 @@
 #include <algorithm>
 #include <list>
 
-typedef std::list<std::pair<std::string, std::string>> t_instruct;
+typedef std::pair<std::string, std::string> t_StrPair;
+typedef std::list<t_StrPair> t_instruct;
 
 enum eOperandType
 {
@@ -31,7 +32,8 @@ enum eOperandType
 	e_int_32,
 	e_float,
 	e_double,
-	e_typeNb
+	e_typeNb,
+	e_typeError
 };
 
 

@@ -12,7 +12,14 @@
 
 #include "Factory.hpp"
 
+Factory::Factory() : _vm(new VmStack<const IOperand*>()) {};
+
+Factory::~Factory() {}
+
 IOperand const * Factory::createOperand( eOperandType type, std::string const & value ) const {
+
+	if (type == e_typeError)
+		throw std::runtime_error(("\033[31mType Error\033[0m"));
 	if (type == e_int_8)
 		return this->createInt8(value);
 	if (type == e_int_16)
@@ -44,4 +51,59 @@ IOperand const * Factory::createFloat( std::string const & value ) const {
 
 IOperand const * Factory::createDouble( std::string const & value ) const {
 	return new TOperand<double>(static_cast<double>(::atof(value.c_str())), e_double);
+}
+
+/* ---------------------------------------------------------------------- */
+eOperandType   Factory::_getType(std::string val) const {
+
+	size_t   pos = val.find('(');
+	size_t   posi = val.find(')');
+	if (pos == std::string::npos || posi == std::string::npos || posi <= pos)
+		return e_typeError;
+	std::string t = val.substr(0, pos);
+
+	if (t == "int8")
+		return e_int_8;
+	if (t == "int16")
+		return e_int_16;
+	if (t == "int32")
+		return e_int_32;
+	if (t == "float")
+		return e_float;
+	if (t == "double")
+		return e_double;
+
+	return e_typeError;
+}
+
+std::string    Factory::_getValue(std::string val) const {
+
+	size_t   pos = val.find('(') + 1;
+	size_t   posi = val.find(')');
+
+	return (val.substr(pos, posi - pos));
+}
+
+/* ---------------------------------------------------------------------- */
+void 				  Factory::Execute(t_StrPair ins) const {
+
+	if (ins.first == "push")
+		this->_Push(ins.second);
+	else if (ins.first == "pop")
+		this->_vm->pop();
+}
+
+void 				  Factory::_Push(std::string str) const {
+
+	eOperandType type = this->_getType(str);
+	if (type == e_typeError)
+		throw std::runtime_error(("\033[31mType Error\033[0m"));
+	std::string value = this->_getValue(str);
+	this->_vm->push(this->createOperand(type, value));
+}
+
+void 				  Factory::Show() const {
+
+	for (auto& x : *_vm)
+		std::cout << x->toString() << std::endl;
 }
