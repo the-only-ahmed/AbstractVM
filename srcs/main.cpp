@@ -19,7 +19,6 @@ void  emulate(t_instruct instruct) {
    Factory fac;
    for(auto& ins : instruct)
       fac.Execute(ins);
-   fac.Show();
 }
 
 int   main(int ac, char **av) {

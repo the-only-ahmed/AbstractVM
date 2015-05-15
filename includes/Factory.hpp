@@ -13,7 +13,6 @@
 #ifndef FACTORY_HPP
 # define FACTORY_HPP
 
-#include "TOperand.tpp"
 #include "VmStack.tpp"
 
 class Factory
@@ -29,10 +28,11 @@ private:
 
 	void 				  _Push(std::string str) const;
 	void 				  _Assert(std::string str) const;
-	void 				  _Dump() const;
+	// void 				  _Dump() const;
 	void 				  _Add() const;
 	void 				  _Sub() const;
 	void 				  _Mul() const;
+	void 				  _Div() const;
 	void 				  _Mod() const;
 	void 				  _Print() const;
 
@@ -42,10 +42,10 @@ private:
 public:
 	Factory();
 	~Factory();
+	void 				  _Dump() const;
 
 	IOperand const * createOperand( eOperandType type, std::string const & value ) const;
 	void				  Execute(t_StrPair ins) const;
-	void 				  Show() const;
 };
 
 #endif

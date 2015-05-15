@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "TOperand.tpp"
 #include "Factory.hpp"
 
 Factory::Factory() : _vm(new VmStack<const IOperand*>()) {};
@@ -21,15 +22,15 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
 	if (type == e_typeError)
 		throw std::runtime_error(("\033[31mType Error\033[0m"));
 	if (type == e_int_8)
-		return this->createInt8(value);
+		return Factory::createInt8(value);
 	if (type == e_int_16)
-		return this->createInt16(value);
+		return Factory::createInt16(value);
 	if (type == e_int_32)
-		return this->createInt32(value);
+		return Factory::createInt32(value);
 	if (type == e_float)
-		return this->createFloat(value);
+		return Factory::createFloat(value);
 	if (type == e_double)
-		return this->createDouble(value);
+		return Factory::createDouble(value);
 	return NULL;
 }
 
@@ -91,6 +92,22 @@ void 				  Factory::Execute(t_StrPair ins) const {
 		this->_Push(ins.second);
 	else if (ins.first == "pop")
 		this->_vm->pop();
+	else if (ins.first == "add")
+		this->_Add();
+	else if (ins.first == "sub")
+		this->_Sub();
+	else if (ins.first == "mul")
+		this->_Mul();
+	else if (ins.first == "div")
+		this->_Div();
+	else if (ins.first == "mod")
+		this->_Mod();
+	else if (ins.first == "dump")
+		this->_Dump();
+	else if (ins.first == "print")
+		this->_Print();
+	else if (ins.first == "assert")
+		this->_Assert(ins.second);
 }
 
 void 				  Factory::_Push(std::string str) const {
@@ -102,8 +119,86 @@ void 				  Factory::_Push(std::string str) const {
 	this->_vm->push(this->createOperand(type, value));
 }
 
-void 				  Factory::Show() const {
+void 				  Factory::_Dump() const {
 
-	for (auto& x : *_vm)
-		std::cout << x->toString() << std::endl;
+	VmStack<const IOperand*>::iterator	ite = this->_vm->end();
+	VmStack<const IOperand*>::iterator	it = this->_vm->begin();
+
+	while (it != ite)
+	{
+		--ite;
+		std::cout << (*ite)->toString() << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+void 			  	  Factory::_Add() const {
+
+	const IOperand* a = _vm->top();
+	_vm->pop();
+	const IOperand* b = _vm->top();
+	_vm->pop();
+	const IOperand* x = *a + *b;
+	this->_vm->push(x);
+}
+
+void 			  	  Factory::_Sub() const {
+
+	const IOperand* a = _vm->top();
+	_vm->pop();
+	const IOperand* b = _vm->top();
+	_vm->pop();
+	const IOperand* x = *a - *b;
+	this->_vm->push(x);
+}
+
+void 			  	  Factory::_Mul() const {
+
+	const IOperand* a = _vm->top();
+	_vm->pop();
+	const IOperand* b = _vm->top();
+	_vm->pop();
+	const IOperand* x = (*a) * (*b);
+	this->_vm->push(x);
+}
+
+void 			  	  Factory::_Div() const {
+
+	const IOperand* a = _vm->top();
+	_vm->pop();
+	const IOperand* b = _vm->top();
+	_vm->pop();
+	const IOperand* x = *a / *b;
+	this->_vm->push(x);
+}
+
+void 			  	  Factory::_Mod() const {
+
+	const IOperand* a = _vm->top();
+	_vm->pop();
+	const IOperand* b = _vm->top();
+	_vm->pop();
+	const IOperand* x = *a % *b;
+	this->_vm->push(x);
+}
+
+void 				  Factory::_Print() const {
+
+	char	c = std::stoi(this->_vm->top()->toString());
+	std::cout << c << std::endl;
+}
+
+void 				  Factory::_Assert(std::string str) const {
+
+	eOperandType type = this->_getType(str);
+	if (type == e_typeError)
+		throw std::runtime_error(("\033[31mType Error\033[0m"));
+	std::string value = this->_getValue(str);
+
+	const IOperand* a = Factory().createOperand(type, value);
+	const IOperand* b = this->_vm->top();
+	if (*a == *b)
+		std::cout << "TRUE" << std::endl;
+	else
+		std::cout << "FALSE" << std::endl;
 }
