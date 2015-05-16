@@ -1,0 +1,20 @@
+; -------------
+; errorNoVal1 -
+; -------------
+
+push int32(42) ; -32768 a 32 767
+push int32(33)
+
+add
+push ; ERROR ICI
+mul
+
+push double(42.42)
+push int32(42)
+
+dump
+pop
+
+assert double(42.42)
+
+exit

@@ -1,0 +1,40 @@
+;push int8(16) ;fdfds;;;;;;;;;;;;;;;;fdsfdsfdsf;;;;;;;;fds
+          push int8(48)
+
+          		;;;
+;lol int8(-4.)
+
+;pop;
+
+
+push int8(8)
+	   					pop
+
+
+
+
+
+
+
+
+      			   dump
+print
+
+push float(99999999999999999999999999999999999999.0)
+push float(0.1)
+mul
+dump
+
+
+exit
+;
+;
+;
+;
+;
+;;;;;;;;;;;;;;;;;;;;
+
+
+;fdsfdsfdsfs
+;exit
+;;

@@ -1,0 +1,9 @@
+push int8(42)	; OK
+
+push int8(127)	; OK
+push int8(128)	; NOK
+
+push int8(-128)	; OK
+push int8(-129)	; NOK
+
+exit

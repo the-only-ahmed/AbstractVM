@@ -1,0 +1,7 @@
+push int16(42);
+push int8(40);
+push int32(-32769);
+push int32(5464654);
+push float(25.23);
+push double(8.646468778);
+push float(128371289)

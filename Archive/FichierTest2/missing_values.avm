@@ -1,0 +1,4 @@
+push float(4.2)
+add
+
+exit

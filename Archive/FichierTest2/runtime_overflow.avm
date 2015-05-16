@@ -1,0 +1,13 @@
+push int8(42)
+push int8(85)
+add				; OK
+dump
+
+pop
+
+push int8(42)
+push int8(86)
+add				; NOK
+dump
+
+exit

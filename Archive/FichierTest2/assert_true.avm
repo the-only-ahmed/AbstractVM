@@ -1,0 +1,16 @@
+push double(42.42)
+push double(42.42)
+add
+
+assert double(84.84)
+
+push int8(10)	; !
+push int8(71)	; G
+push int8(71)	; G
+print
+pop
+print
+pop
+print
+
+exit

@@ -1,0 +1,6 @@
+push double(-1.79769e+308)
+push double(0.1)
+dump
+div
+dump
+exit

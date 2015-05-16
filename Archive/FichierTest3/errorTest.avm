@@ -1,0 +1,6 @@
+push int8(45)
+push int8(999)
+add
+
+pop
+exit

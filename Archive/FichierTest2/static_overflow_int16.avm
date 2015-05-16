@@ -1,0 +1,9 @@
+push int16(42)		; OK
+
+push int16(32767)	; OK
+push int16(32768)	; NOK
+
+push int16(-32768)	; OK
+push int16(-32769)	; NOK
+
+exit

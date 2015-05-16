@@ -1,0 +1,9 @@
+push int8(42)
+push int16(89)
+;ici un comment
+assert
+sdk mfklsdfmlsdkfsd
+mul
+push
+mod int32(78)
+exit

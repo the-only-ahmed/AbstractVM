@@ -1,0 +1,5 @@
+push double(1.79769e+308)
+push double(1.00000e+303)
+dump
+add
+exit

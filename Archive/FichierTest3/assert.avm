@@ -1,0 +1,7 @@
+push int8(21)
+push int8(21)
+dump
+add
+dump
+assert int8(43)
+exit
