@@ -13,6 +13,12 @@
 #ifndef FACTORY_HPP
 # define FACTORY_HPP
 
+#include <stdexcept>
+#include <climits>
+#include <cfloat>
+#include <cfenv>
+#include <math.h>
+
 #include "VmStack.tpp"
 
 class Factory
@@ -46,6 +52,42 @@ public:
 
 	IOperand const * createOperand( eOperandType type, std::string const & value ) const;
 	void				  Execute(t_StrPair ins) const;
+
+	class FactoryException : public std::runtime_error
+	{
+		public :
+			FactoryException(std::string error) throw();
+			~FactoryException() throw();
+			virtual const char* what() const throw();
+
+		private :
+			FactoryException &		operator=(FactoryException const & src);
+			// ParseException(ParseException const & src) throw();
+	};
+
+	class OverflowError : public std::runtime_error
+	{
+		public :
+			OverflowError(std::string error) throw();
+			~OverflowError() throw();
+			virtual const char* what() const throw();
+
+		private :
+			OverflowError &		operator=(OverflowError const & src);
+			// ParseException(ParseException const & src) throw();
+	};
+
+	class UnderflowError : public std::runtime_error
+	{
+		public :
+			UnderflowError(std::string error) throw();
+			~UnderflowError() throw();
+			virtual const char* what() const throw();
+
+		private :
+			UnderflowError &		operator=(UnderflowError const & src);
+			// ParseException(ParseException const & src) throw();
+	};
 };
 
 #endif

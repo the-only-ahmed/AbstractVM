@@ -13,6 +13,43 @@
 #include "TOperand.tpp"
 #include "Factory.hpp"
 
+/* ------------------------------ Exception ------------------------------ */
+
+Factory::FactoryException::FactoryException(std::string error) throw()
+	: std::runtime_error(error) {}
+
+Factory::FactoryException::~FactoryException() throw() {}
+
+const char*		Factory::FactoryException::what() const throw() {
+
+	std::string was = "Execution Fail : " + std::string(std::runtime_error::what());
+	return was.c_str();
+}
+
+Factory::OverflowError::OverflowError(std::string error) throw()
+	: std::runtime_error(error) {}
+
+Factory::OverflowError::~OverflowError() throw() {}
+
+const char*		Factory::OverflowError::what() const throw() {
+
+	std::string was = "\033[31mOver Flow Exception : " + std::string(std::runtime_error::what()) + "\033[0m";
+	return was.c_str();
+}
+
+Factory::UnderflowError::UnderflowError(std::string error) throw()
+	: std::runtime_error(error) {}
+
+Factory::UnderflowError::~UnderflowError() throw() {}
+
+const char*		Factory::UnderflowError::what() const throw() {
+
+	std::string was = "\033[31mUnder Flow Exception : " + std::string(std::runtime_error::what()) + "\033[0m";
+	return was.c_str();
+}
+
+/* ------------------------------ Parsing ------------------------------ */
+
 Factory::Factory() : _vm(new VmStack<const IOperand*>()) {};
 
 Factory::~Factory() {}
@@ -20,7 +57,7 @@ Factory::~Factory() {}
 IOperand const * Factory::createOperand( eOperandType type, std::string const & value ) const {
 
 	if (type == e_typeError)
-		throw std::runtime_error(("\033[31mType Error\033[0m"));
+		throw FactoryException(("\033[31mType Error\033[0m"));
 	if (type == e_int_8)
 		return Factory::createInt8(value);
 	if (type == e_int_16)
@@ -35,23 +72,112 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
 }
 
 IOperand const * Factory::createInt8( std::string const & value ) const {
-	return new TOperand<int8_t>(static_cast<int8_t>(std::stoi(value)), e_int_8);
+
+	double test;
+	std::feclearexcept(FE_OVERFLOW);
+	std::feclearexcept(FE_UNDERFLOW);
+	try {
+		test = stod(value);
+	} catch (std::out_of_range &e) {
+		throw std::runtime_error("\033[31mOut of range exception\033[0m");
+	}	if (std::fetestexcept(FE_UNDERFLOW))
+		throw UnderflowError("int8");
+	if (std::fetestexcept(FE_OVERFLOW))
+		throw OverflowError("int8");
+	if (test < SCHAR_MIN)
+		throw UnderflowError("int8");
+	else if (test > SCHAR_MAX)
+		throw OverflowError("int8");
+
+	return new TOperand<int8_t>(static_cast<int8_t>(test), e_int_8);
 }
 
 IOperand const * Factory::createInt16( std::string const & value ) const {
-	return new TOperand<int16_t>(static_cast<int16_t>(std::stoi(value)), e_int_16);
+
+	double test;
+	std::feclearexcept(FE_OVERFLOW);
+	std::feclearexcept(FE_UNDERFLOW);
+	try {
+		test = stod(value);
+	} catch (std::out_of_range &e) {
+		throw std::runtime_error("\033[31mOut of range exception\033[0m");
+	}	if (std::fetestexcept(FE_UNDERFLOW))
+		throw UnderflowError("int16");
+	if (std::fetestexcept(FE_OVERFLOW))
+		throw OverflowError("int16");
+	if (test < SHRT_MIN)
+		throw UnderflowError("int16");
+	else if (test > SHRT_MAX)
+		throw OverflowError("int16");
+
+	return new TOperand<int16_t>(static_cast<int16_t>(test), e_int_16);
 }
 
 IOperand const * Factory::createInt32( std::string const & value ) const {
-	return new TOperand<int32_t>(static_cast<int32_t>(std::stoi(value)), e_int_32);
+
+	double test;
+	std::feclearexcept(FE_OVERFLOW);
+	std::feclearexcept(FE_UNDERFLOW);
+	try {
+		test = stod(value);
+	} catch (std::out_of_range &e) {
+		throw std::runtime_error("\033[31mOut of range exception\033[0m");
+	}	if (std::fetestexcept(FE_UNDERFLOW))
+		throw UnderflowError("int32");
+	if (std::fetestexcept(FE_OVERFLOW))
+		throw OverflowError("int32");
+	if (test < INT_MIN)
+		throw UnderflowError("int32");
+	else if (test > INT_MAX)
+		throw OverflowError("int32");
+
+	return new TOperand<int32_t>(static_cast<int32_t>(test), e_int_32);
 }
 
 IOperand const * Factory::createFloat( std::string const & value ) const {
-	return new TOperand<float>(static_cast<float>(::atof(value.c_str())), e_float);
+
+	double test;
+	std::feclearexcept(FE_OVERFLOW);
+	std::feclearexcept(FE_UNDERFLOW);
+	try {
+		test = stod(value);
+	} catch (std::out_of_range &e) {
+		throw std::runtime_error("\033[31mOut of range exception\033[0m");
+	}
+	if (std::fetestexcept(FE_UNDERFLOW))
+		throw UnderflowError("float");
+	if (std::fetestexcept(FE_OVERFLOW))
+		throw OverflowError("float");
+
+	if (test < FLT_MIN)
+		throw UnderflowError("float");
+	if (test > FLT_MAX)
+		throw OverflowError("float");
+
+	return new TOperand<float>(static_cast<float>(test), e_float);
 }
 
 IOperand const * Factory::createDouble( std::string const & value ) const {
-	return new TOperand<double>(static_cast<double>(::atof(value.c_str())), e_double);
+
+	double test;
+	std::feclearexcept(FE_OVERFLOW);
+	std::feclearexcept(FE_UNDERFLOW);
+	try {
+		test = stod(value);
+	} catch (std::out_of_range &e) {
+		throw std::runtime_error("\033[31mOut of range exception\033[0m");
+	}
+	if (std::fetestexcept(FE_UNDERFLOW))
+		throw UnderflowError("double");
+	if (std::fetestexcept(FE_OVERFLOW))
+		throw OverflowError("double");
+
+	if (test < FLT_MIN)
+		throw UnderflowError("double");
+	if (test > FLT_MAX)
+		throw OverflowError("double");
+
+	return new TOperand<double>(test, e_double);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -91,7 +217,11 @@ void 				  Factory::Execute(t_StrPair ins) const {
 	if (ins.first == "push")
 		this->_Push(ins.second);
 	else if (ins.first == "pop")
+	{
+		if (this->_vm->empty())
+			throw FactoryException(("\033[31mEmpty Stack !\033[0m"));
 		this->_vm->pop();
+	}
 	else if (ins.first == "add")
 		this->_Add();
 	else if (ins.first == "sub")
@@ -129,11 +259,12 @@ void 				  Factory::_Dump() const {
 		--ite;
 		std::cout << (*ite)->toString() << std::endl;
 	}
-	std::cout << std::endl;
 }
 
 void 			  	  Factory::_Add() const {
 
+	if (_vm->size() < 2)
+		throw FactoryException(("\033[31mMissing values\033[0m"));
 	const IOperand* a = _vm->top();
 	_vm->pop();
 	const IOperand* b = _vm->top();
@@ -144,6 +275,8 @@ void 			  	  Factory::_Add() const {
 
 void 			  	  Factory::_Sub() const {
 
+	if (_vm->size() < 2)
+		throw FactoryException(("\033[31mMissing values\033[0m"));
 	const IOperand* a = _vm->top();
 	_vm->pop();
 	const IOperand* b = _vm->top();
@@ -154,6 +287,8 @@ void 			  	  Factory::_Sub() const {
 
 void 			  	  Factory::_Mul() const {
 
+	if (_vm->size() < 2)
+		throw FactoryException(("\033[31mMissing values\033[0m"));
 	const IOperand* a = _vm->top();
 	_vm->pop();
 	const IOperand* b = _vm->top();
@@ -164,6 +299,8 @@ void 			  	  Factory::_Mul() const {
 
 void 			  	  Factory::_Div() const {
 
+	if (_vm->size() < 2)
+		throw FactoryException(("\033[31mMissing values\033[0m"));
 	const IOperand* a = _vm->top();
 	_vm->pop();
 	const IOperand* b = _vm->top();
@@ -174,6 +311,8 @@ void 			  	  Factory::_Div() const {
 
 void 			  	  Factory::_Mod() const {
 
+	if (_vm->size() < 2)
+		throw FactoryException(("\033[31mMissing values\033[0m"));
 	const IOperand* a = _vm->top();
 	_vm->pop();
 	const IOperand* b = _vm->top();
@@ -192,13 +331,11 @@ void 				  Factory::_Assert(std::string str) const {
 
 	eOperandType type = this->_getType(str);
 	if (type == e_typeError)
-		throw std::runtime_error(("\033[31mType Error\033[0m"));
+		throw FactoryException(("\033[31mType Error\033[0m"));
 	std::string value = this->_getValue(str);
 
 	const IOperand* a = Factory().createOperand(type, value);
 	const IOperand* b = this->_vm->top();
-	if (*a == *b)
-		std::cout << "TRUE" << std::endl;
-	else
-		std::cout << "FALSE" << std::endl;
+	if (!(*a == *b))
+		throw FactoryException(("\033[31mAssert Error ==> given value different from the last value on the stack\033[0m"));
 }

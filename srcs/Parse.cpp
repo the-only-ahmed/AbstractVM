@@ -56,6 +56,7 @@ t_instruct     Parse::getInstructions(std::string path) {
       throw ParseException("\033[31mCannot read from file " + path +" !! check the file\033[0m");
    }
 
+   int ext = 0;
    while (true)
    {
       if (first_line)
@@ -70,13 +71,11 @@ t_instruct     Parse::getInstructions(std::string path) {
       size_t pos = line.find(';');
       if (pos != std::string::npos)
          line = line.substr(0, pos);
-
       std::vector<std::string> str;
       std::string part;
       std::istringstream buf(line);
       while (std::getline(buf, part, ' '))
          str.push_back(part);
-
       std::vector<std::string>::iterator it = str.begin();
       while(it != str.end())
       {
@@ -89,11 +88,17 @@ t_instruct     Parse::getInstructions(std::string path) {
          continue;
       if (!Parse::_check_instruction(str[0]))
          throw ParseException("\033[31mUndefined instruction : " + str[0] +" !!\033[0m");
-      if (str[0] == "push" || str[0] == "assert")
+      if (str[0] == "exit")
+      {
+         ext++;
+         if (ext > 1)
+            throw ParseException("\033[31mCall of exit instruction more than once !\033[0m");
+         str.push_back("empty");
+      }
+      else if (str[0] == "push" || str[0] == "assert")
       {
          if (str.size() != 2)
             throw ParseException("\033[31mFalse " + str[0] + " instruction usage : " + str[0] + " value \033[0m");
-
       }
       else
       {
@@ -101,9 +106,10 @@ t_instruct     Parse::getInstructions(std::string path) {
             throw ParseException("\033[31mFalse instruction usage : " + str[0] + " doesn't have arguments !!\033[0m");
          str.push_back("empty");
       }
-
       stack.push_back(std::make_pair(str[0], str[1]));
    }
+   if (ext == 0)
+      throw ParseException("\033[31mMissing exit instruction !\033[0m");
    return stack;
 }
 
