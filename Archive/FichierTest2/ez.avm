@@ -1,5 +1,5 @@
 ;push int8(16) ;fdfds;;;;;;;;;;;;;;;;fdsfdsfdsf;;;;;;;;fds
-          push int8(48)
+;          push int8(48)
 
           		;;;
 ;lol int8(-4.)
@@ -7,8 +7,8 @@
 ;pop;
 
 
-push int8(8)
-	   					pop
+;push int8(8)
+;	   					pop
 
 
 
@@ -17,12 +17,12 @@ push int8(8)
 
 
 
-      			   dump
-print
+ ;     			   dump
+;print
 
 push float(99999999999999999999999999999999999999.0)
-push float(0.1)
-mul
+;push float(0.1)
+;mul
 dump
 
 

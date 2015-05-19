@@ -34,8 +34,6 @@ std::string* Parse::_instructions = Parse::_setInstructions();
 
 t_instruct     Parse::getInstructions(std::string path) {
 
-   t_instruct stack;
-
    std::ifstream ifin (path.c_str(), std::ifstream::in);
    if (!ifin.good())
    {
@@ -48,14 +46,18 @@ t_instruct     Parse::getInstructions(std::string path) {
       throw ParseException("\033[31mYou dont Have rights to read from file " + path +" !! check rights\033[0m");
    }
    std::string line;
-   bool first_line = false;
-
    if (getline(ifin, line).fail())
    {
       ifin.close();
       throw ParseException("\033[31mCannot read from file " + path +" !! check the file\033[0m");
    }
+   return Parse::Parsing(ifin, line);
+}
 
+t_instruct  Parse::Parsing(std::istream &ifin, std::string &line) {
+
+   t_instruct stack;
+   bool first_line = false;
    int ext = 0;
    while (true)
    {
@@ -135,4 +137,11 @@ bool  Parse::_check_instruction(std::string ins) {
    if (std::find(Parse::_instructions, Parse::_instructions+11, ins) != Parse::_instructions+11)
       return true;
    return false;
+}
+
+t_instruct     Parse::getInstructions() {
+
+   std::string line;
+   std::cout << "\033[33mType control + D to end your file\033[0m" << std::endl;
+   return Parse::Parsing(std::cin, line);
 }

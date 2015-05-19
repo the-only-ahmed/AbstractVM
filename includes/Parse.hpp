@@ -22,6 +22,7 @@ private:
 
    static bool           _check_instruction(std::string str);
    static std::string    *_setInstructions();
+   static t_instruct     Parsing(std::istream &ifin, std::string &line);
 
    Parse & operator=(const Parse & rhs);
    Parse(const Parse & src);
@@ -31,6 +32,7 @@ public:
    ~Parse();
 
    static t_instruct getInstructions(std::string path);
+   static t_instruct getInstructions();
 
    class ParseException : public std::runtime_error
    {

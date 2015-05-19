@@ -13,10 +13,11 @@
 #include "Parse.hpp"
 #include "IOperand.hpp"
 #include "Factory.hpp"
+#include "Emulator.hpp"
 
 void  emulate(t_instruct instruct) {
 
-   Factory fac;
+   Emulator fac;
    for(auto& ins : instruct)
       fac.Execute(ins);
 }
@@ -25,8 +26,13 @@ int   main(int ac, char **av) {
 
    if (ac < 2)
    {
-      std::cout << "Usage : " << av[0] << " FILE.avm" << std::endl;
-      return -1;
+      try {
+         t_instruct instruct = Parse::getInstructions();
+         std::cout << std::endl;
+         emulate(instruct);
+      } catch (std::runtime_error &e) {
+         std::cout << e.what() << std::endl;
+      }
    }
    for (int i=1; i<ac; i++)
    {

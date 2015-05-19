@@ -18,8 +18,10 @@
 template <typename T>
 class VmStack : public std::stack<T>
 {
-    private:
-        typedef std::stack<T> base;
+   private:
+      typedef std::stack<T> base;
+
+      VmStack &		operator=(VmStack const & src);
 
     public:
     VmStack(void) {}

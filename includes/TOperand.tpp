@@ -24,6 +24,9 @@ private:
 	T					_value;
 	std::string		_stringVal;
 
+	TOperand &		operator=(TOperand const & src);
+	TOperand(TOperand const & src);
+
 public:
 	TOperand(T value, eOperandType type) : _type(type), _value(value) {
 		_stringVal = std::to_string(this->_value);
@@ -55,7 +58,7 @@ IOperand const * TOperand<T>::operator+( IOperand const & rhs ) const {
 	eOperandType type = (this->_type >= rhs.getType())?this->_type : rhs.getType();
 	double x = ::atof(this->_stringVal.c_str()) + ::atof(rhs.toString().c_str());
 	std::string res = std::to_string(x);
-	return Factory().createOperand(type, res);
+	return Factory::createOperand(type, res);
 }
 
 template<typename T>
@@ -64,7 +67,7 @@ IOperand const * TOperand<T>::operator-( IOperand const & rhs ) const {
 	eOperandType type = (this->_type >= rhs.getType())?this->_type : rhs.getType();
 	double x = ::atof(this->_stringVal.c_str()) - ::atof(rhs.toString().c_str());
 	std::string res = std::to_string(x);
-	return Factory().createOperand(type, res);
+	return Factory::createOperand(type, res);
 }
 
 template<typename T>
@@ -73,7 +76,7 @@ IOperand const * TOperand<T>::operator*( IOperand const & rhs ) const {
 	eOperandType type = (this->_type >= rhs.getType())?this->_type : rhs.getType();
 	double x = ::atof(this->_stringVal.c_str()) * ::atof(rhs.toString().c_str());
 	std::string res = std::to_string(x);
-	return Factory().createOperand(type, res);
+	return Factory::createOperand(type, res);
 }
 
 template<typename T>
@@ -87,7 +90,7 @@ IOperand const * TOperand<T>::operator/( IOperand const & rhs ) const {
 
 	double x = ::atof(rhs.toString().c_str()) / b;
 	std::string res = std::to_string(x);
-	return Factory().createOperand(type, res);
+	return Factory::createOperand(type, res);
 }
 
 template<typename T>
@@ -100,7 +103,7 @@ IOperand const * TOperand<T>::operator%( IOperand const & rhs ) const {
 
 	int x = ::atoi(this->_stringVal.c_str()) % ::atoi(rhs.toString().c_str());
 	std::string res = std::to_string(x);
-	return Factory().createOperand(type, res);
+	return Factory::createOperand(type, res);
 }
 
 template<typename T>
