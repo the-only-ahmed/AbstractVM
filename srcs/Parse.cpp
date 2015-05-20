@@ -22,6 +22,7 @@ Parse::ParseException::~ParseException() throw() {}
 const char*		Parse::ParseException::what() const throw() {
 
    std::string was = "Parse Error : " + std::string(std::runtime_error::what());
+   // std::cout << was.c_str() << std::endl;
    return was.c_str();
 }
 
@@ -30,26 +31,49 @@ const char*		Parse::ParseException::what() const throw() {
 Parse::~Parse() {}
 Parse::Parse() {}
 
-std::string* Parse::_instructions = Parse::_setInstructions();
+bool                       Parse::_info = false;
+int                        Parse::_count = 0;
+std::vector<std::string>   Parse::_errors;
+std::string*               Parse::_instructions = Parse::_setInstructions();
 
-t_instruct     Parse::getInstructions(std::string path) {
+void           Parse::_PushMessage(std::string msg) {
 
+   if (Parse::_count > 1)
+      msg = "Parse Error : " + msg;
+   Parse::_errors.push_back(msg);
+}
+
+t_instruct     Parse::getInstructions(std::string path, bool info) {
+
+   Parse::_info = info;
    std::ifstream ifin (path.c_str(), std::ifstream::in);
    if (!ifin.good())
    {
+      Parse::_count++;
       ifin.close();
-      throw ParseException("\033[31mYou dont Have rights to read from file " + path +" !! check rights\033[0m");
+      if (!Parse::_info)
+         throw ParseException("\033[31mYou dont Have rights to read from file " + path +" !! check rights\033[0m");
+      else
+         Parse::_PushMessage("\033[31mYou dont Have rights to read from file " + path +" !! check rights\033[0m");
    }
    if (!ifin.is_open())
    {
+      Parse::_count++;
       ifin.close();
-      throw ParseException("\033[31mYou dont Have rights to read from file " + path +" !! check rights\033[0m");
+      if (!Parse::_info)
+         throw ParseException("\033[31mYou dont Have rights to read from file " + path +" !! check rights\033[0m");
+      else
+         Parse::_PushMessage("\033[31mYou dont Have rights to read from file " + path +" !! check rights\033[0m");
    }
    std::string line;
    if (getline(ifin, line).fail())
    {
+      Parse::_count++;
       ifin.close();
-      throw ParseException("\033[31mCannot read from file " + path +" !! check the file\033[0m");
+      if (!Parse::_info)
+         throw ParseException("\033[31mCannot read from file " + path +" !! check the file\033[0m");
+      else
+         Parse::_PushMessage("\033[31mCannot read from file " + path +" !! check the file\033[0m");
    }
    return Parse::Parsing(ifin, line);
 }
@@ -89,29 +113,61 @@ t_instruct  Parse::Parsing(std::istream &ifin, std::string &line) {
       if (str.empty())
          continue;
       if (!Parse::_check_instruction(str[0]))
-         throw ParseException("\033[31mUndefined instruction : " + str[0] +" !!\033[0m");
+      {
+         Parse::_count++;
+         if (!Parse::_info)
+            throw ParseException("\033[31mUndefined instruction : " + str[0] +" !!\033[0m");
+         else
+            Parse::_PushMessage("\033[31mUndefined instruction : " + str[0] +" !!\n\033[0m");
+      }
       if (str[0] == "exit")
       {
          ext++;
          if (ext > 1)
-            throw ParseException("\033[31mCall of exit instruction more than once !\033[0m");
+         {
+            Parse::_count++;
+            if (!Parse::_info)
+               throw ParseException("\033[31mCall of exit instruction more than once !\033[0m");
+            else
+               Parse::_PushMessage("\033[31mCall of exit instruction more than once !\n\033[0m");
+         }
          str.push_back("empty");
       }
       else if (str[0] == "push" || str[0] == "assert")
       {
          if (str.size() != 2)
-            throw ParseException("\033[31mFalse " + str[0] + " instruction usage : " + str[0] + " value \033[0m");
+         {
+            Parse::_count++;
+            if (!Parse::_info)
+               throw ParseException("\033[31mFalse " + str[0] + " instruction usage : " + str[0] + " value \033[0m");
+            else
+               Parse::_PushMessage("\033[31mFalse " + str[0] + " instruction usage : " + str[0] + " value \n\033[0m");
+         }
       }
       else
       {
          if (str.size() != 1)
-            throw ParseException("\033[31mFalse instruction usage : " + str[0] + " doesn't have arguments !!\033[0m");
+         {
+            Parse::_count++;
+            if (!Parse::_info)
+               throw ParseException("\033[31mFalse instruction usage : " + str[0] + " doesn't have arguments !!\033[0m");
+            else
+               Parse::_PushMessage("\033[31mFalse instruction usage : " + str[0] + " doesn't have arguments !!\n\033[0m");
+         }
          str.push_back("empty");
       }
       stack.push_back(std::make_pair(str[0], str[1]));
    }
    if (ext == 0)
-      throw ParseException("\033[31mMissing exit instruction !\033[0m");
+   {
+      Parse::_count++;
+      if (!Parse::_info)
+         throw ParseException("\033[31mMissing exit instruction !\033[0m");
+      else
+         Parse::_PushMessage("\033[31mMissing exit instruction !\033[0m");
+   }
+   if (Parse::_info && !Parse::_errors.empty())
+      throw ParseException(Parse::_SetException());
    return stack;
 }
 
@@ -139,9 +195,18 @@ bool  Parse::_check_instruction(std::string ins) {
    return false;
 }
 
-t_instruct     Parse::getInstructions() {
+t_instruct     Parse::getInstructions(bool info) {
 
+   Parse::_info = info;
    std::string line;
    std::cout << "\033[33mType control + D to end your file\033[0m" << std::endl;
    return Parse::Parsing(std::cin, line);
+}
+
+std::string    Parse::_SetException() {
+
+   std::string exc;
+   for (auto& str : Parse::_errors)
+      exc += str;
+   return exc;
 }

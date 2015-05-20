@@ -14,7 +14,10 @@
 #include "Emulator.hpp"
 
 Emulator::Emulator() : _vm(new VmStack<const IOperand*>()), _colorBegin("\033[0m"),
-      _colorEnd("\033[0m"), _rainbow(true), _a(0), _b(31) {}
+      _colorEnd("\033[0m"), _rainbow(false), _a(0), _b(31) {}
+
+Emulator::Emulator(bool rainbow) : _vm(new VmStack<const IOperand*>()), _colorBegin("\033[0m"),
+      _colorEnd("\033[0m"), _rainbow(rainbow), _a(0), _b(31) {}
 
 Emulator::~Emulator() {}
 

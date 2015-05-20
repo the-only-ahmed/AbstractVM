@@ -43,10 +43,11 @@ class Emulator
       std::string      _getValue(std::string val) const;
 
       Emulator &		operator=(Emulator const & src);
-      Emulator(Emulator const & src);
+      // Emulator(Emulator const & src);
 
    public:
       Emulator();
+      Emulator(bool rainbow);
       ~Emulator();
 
       void				  Execute(t_StrPair ins);
