@@ -43,7 +43,7 @@ class Emulator
       std::string      _getValue(std::string val) const;
 
       Emulator &		operator=(Emulator const & src);
-      // Emulator(Emulator const & src);
+      Emulator(Emulator const *src);
 
    public:
       Emulator();

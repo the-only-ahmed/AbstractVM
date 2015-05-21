@@ -22,7 +22,6 @@ Parse::ParseException::~ParseException() throw() {}
 const char*		Parse::ParseException::what() const throw() {
 
    std::string was = "Parse Error : " + std::string(std::runtime_error::what());
-   // std::cout << was.c_str() << std::endl;
    return was.c_str();
 }
 
